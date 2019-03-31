@@ -1,4 +1,4 @@
-
+import java.util.Vector;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -21,9 +21,12 @@ import javax.swing.JTextArea;
  *
  * @author Evgeniy
  */
+
 public class MyTextArea extends JComponent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener{
-    
-    String words[], nowword;
+
+    Vector words = new Vector();
+    int l = 0;
+    String nWord = "";
     int x, y;
     
     public MyTextArea()
@@ -31,23 +34,62 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
-        this.addKeyListener(this);
+        this.addKeyListener(this); //где должен быть фокус
+        setFocusable(true);
+        words.addElement(new Record(0, 0, ""));
+    }
+    @Override
+    public void keyTyped(KeyEvent k) {
+        String str = String.valueOf(k.getKeyChar());
+        //System.out.println(str);
+        nWord += str;
+        repaint();
+    }
+
+    @Override
+    public void keyPressed(KeyEvent k) {
+            
+    }
+
+    @Override
+    public void keyReleased(KeyEvent k) {
+    
     }
     
+    private class Record{
+        private int x = 0, y = 0;
+        private String word = "";
+        
+        Record(int xn, int yn, String nWord){
+            x = xn;
+            y = yn;
+            word = nWord;
+        }
+        
+    }
+       
     @Override
     public void paint(Graphics g){
+        Record nowWord;
         g.setColor(Color.white);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g.setColor(Color.black);
-        g.drawString("hello world", 100, 100);
+        //g.drawString("hello world", 100, 100);
+        for(int i = 0; i < words.size(); i++)
+        {               
+            nowWord = (Record)words.elementAt(i);
+            g.drawString(nowWord.word , nowWord.x, nowWord.y);
+        }
+        g.drawString(nWord, x, y);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        words.addElement(new Record(x, y, nWord));
         x = e.getX();
-        y = e.getY();
-        repaint();
-        
+        y = e.getY();    
+        nWord = "";
+        repaint();        
     }
 
     @Override
@@ -72,8 +114,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
 
     @Override
     public void mouseDragged(MouseEvent e) {
-       
-        
+               
     }
 
     @Override
@@ -86,19 +127,5 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
               
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        
-    }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int k = e.getKeyChar();
-        System.out.println(k);
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        
-    }
 }
