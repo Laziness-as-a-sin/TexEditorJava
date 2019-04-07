@@ -10,6 +10,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONFunction;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -29,6 +31,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     String nWord = "";
     int x, y;
     
+    
     public MyTextArea()
     {
         this.addMouseListener(this);
@@ -37,6 +40,12 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         this.addKeyListener(this); //где должен быть фокус
         setFocusable(true);
         words.addElement(new Record(0, 0, ""));
+//        JSONObject document = new JSONObject(); //требует объявить тип
+//        JSONObject paragraph = new JSONObject();
+//        JSONObject text = new JSONObject();
+//        text.put("Text", "Hello world!");
+//        paragraph.put("Text", text);
+//        document.put("Paragraph", paragraph);
     }
     @Override
     public void keyTyped(KeyEvent k) {
