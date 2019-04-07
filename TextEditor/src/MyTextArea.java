@@ -10,6 +10,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -28,9 +30,11 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     int l = 0;
     String nWord = "";
     int x, y;
+    JSONObject doc = new JSONObject();
     
     public MyTextArea()
     {
+       // doc.put(key, value)
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
