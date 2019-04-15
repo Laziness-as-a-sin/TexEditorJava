@@ -8,10 +8,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -31,8 +33,9 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     String nWord = "";
     int x, y;
     JSONObject doc = new JSONObject();
+    Document d1 = new Document();
     
-    public MyTextArea()
+    public MyTextArea() throws JSONException
     {
        // doc.put(key, value)
         this.addMouseListener(this);
@@ -41,12 +44,18 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         this.addKeyListener(this); //где должен быть фокус
         setFocusable(true);
         words.addElement(new Record(0, 0, ""));
+        JSONObject text = new JSONObject();
+        int k = 1;
+        text.put("kek", k);
+        System.out.println(text.get("kek"));
     }
     @Override
     public void keyTyped(KeyEvent k) {
-        String str = String.valueOf(k.getKeyChar());
-        //System.out.println(str);
-        nWord += str;
+        try {
+            d1.add();
+        } catch (JSONException ex) {
+            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
+        }
         repaint();
     }
 
@@ -85,6 +94,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
             g.drawString(nowWord.word , nowWord.x, nowWord.y);
         }
         g.drawString(nWord, x, y);
+        d1.paint(g);
     }
 
     @Override

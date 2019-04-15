@@ -2,7 +2,10 @@
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import org.json.JSONException;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,7 +22,7 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
-    public Main() {
+    public Main() throws JSONException {
         initComponents();
         MyTextArea mainText = new MyTextArea();
         mainText.setVisible(true);
@@ -166,7 +169,11 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                try {
+                    new Main().setVisible(true);
+                } catch (JSONException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
