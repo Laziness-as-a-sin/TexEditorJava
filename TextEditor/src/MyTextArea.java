@@ -35,10 +35,6 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     JSONObject doc = new JSONObject();
     Document d1 = new Document();
     
-<<<<<<< HEAD
-=======
-    
->>>>>>> 88ba01aa1abf6a3a3f175cfbd5b1e435a346791e
     public MyTextArea() throws JSONException
     {
        // doc.put(key, value)
@@ -48,19 +44,17 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         this.addKeyListener(this); //где должен быть фокус
         setFocusable(true);
         words.addElement(new Record(0, 0, ""));
-<<<<<<< HEAD
         JSONObject text = new JSONObject();
         int k = 1;
         text.put("kek", k);
         System.out.println(text.get("kek"));
-=======
+
         JSONObject document = new JSONObject(); //требует объявить тип
         JSONObject paragraph = new JSONObject();
-        JSONObject text = new JSONObject();
         text.put("Text", "Hello world!");
         paragraph.put("Text", text);
         document.put("Paragraph", paragraph);
->>>>>>> 88ba01aa1abf6a3a3f175cfbd5b1e435a346791e
+
     }
     @Override
     public void keyTyped(KeyEvent k) {
