@@ -48,7 +48,6 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         int k = 1;
         text.put("kek", k);
         System.out.println(text.get("kek"));
-
         JSONObject document = new JSONObject(); //требует объявить тип
         JSONObject paragraph = new JSONObject();
         text.put("Text", "Hello world!");
@@ -57,13 +56,23 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
 
     }
     @Override
-    public void keyTyped(KeyEvent k) {
-        try {
-            d1.add();
-        } catch (JSONException ex) {
-            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
+    public void keyTyped(KeyEvent k) { 
+        if(k.getKeyChar() == 10){
+            try {
+                d1.add();
+            } catch (JSONException ex) {
+                Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else{
+            try {
+                d1.rewritetec(k.getKeyChar());
+            } catch (JSONException ex) {
+                Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         repaint();
+        
     }
 
     @Override
@@ -101,7 +110,11 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
             g.drawString(nowWord.word , nowWord.x, nowWord.y);
         }
         g.drawString(nWord, x, y);
-        d1.paint(g);
+        try {
+            d1.paint(g);
+        } catch (JSONException ex) {
+            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
