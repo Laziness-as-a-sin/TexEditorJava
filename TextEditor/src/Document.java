@@ -7,17 +7,17 @@ import org.json.JSONObject;
 public class Document {
     ArrayList<Paragraph> p = new ArrayList();
     ArrayList<JSONObject> cord = new ArrayList();
+    int i = 0;
     
     public Document() throws JSONException{
-        Paragraph zero = new Paragraph(2, 12);
+        Paragraph zero = new Paragraph();
         p.add(zero);
     }
     
     public void add() throws JSONException{
-        
-        int y = p.get(p.size()-1).y;
-        Paragraph tec = new Paragraph(2, y+12);
-        p.add(tec);
+        i++;
+        Paragraph newParagraph = new Paragraph();
+        p.add(i, newParagraph);
     }
     
     public void delete(){
@@ -26,20 +26,43 @@ public class Document {
     
     public void rewritetec(char tec) throws JSONException{
         if(tec == 8){
-            p.get(p.size()-1).deletelast();
+            p.get(i).deletelast();
         }
         else{
-            p.get(p.size()-1).add(tec);
+            p.get(i).add(tec);
         }
     }
     
     public void paint(Graphics g) throws JSONException{
-        int x = p.get(p.size()-1).x;
-        int y = p.get(p.size()-1).y;
+        int xt = 1, yt = 2;
         g.setColor(Color.black);
-        g.drawLine(x, y, x, y-10);
+        //g.drawLine(x, y, x, y-10);
         for(int i = 0; i < p.size(); i++){
-            p.get(i).paint(g);
+            yt += 12;
+            p.get(i).paint(g, xt, yt);
+        }
+        
+//        String nk = "HOHOH";
+//        String nk1 = "HOHO";
+//        g.setFont(new Font("TimesRoman", Font.PLAIN, 12)); 
+//        g.drawString(nk , 100, 100);
+//        int width = g.getFontMetrics().stringWidth(nk1);
+//        g.drawLine(100+width, 100, 100+width, 100-10);
+    }
+    
+    public void click(){
+        
+    }
+    
+    public void highlightTop(){//maybe input un one function
+        if(i > 0){
+            i--;
+        }
+    }
+    
+    public void highlightBot(){//maybe input un one function
+        if(i < (p.size()-1)){
+            i++;
         }
     }
 }
