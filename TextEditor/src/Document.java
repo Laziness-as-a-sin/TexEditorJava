@@ -8,6 +8,7 @@ public class Document {
     ArrayList<Paragraph> p = new ArrayList();
     ArrayList<JSONObject> cord = new ArrayList();
     int i = 0;
+    int cX = 1, cY = 14;
     
     public Document() throws JSONException{
         Paragraph zero = new Paragraph();
@@ -18,6 +19,7 @@ public class Document {
         i++;
         Paragraph newParagraph = new Paragraph();
         p.add(i, newParagraph);
+        cY += 12;
     }
     
     public void delete(){
@@ -36,7 +38,7 @@ public class Document {
     public void paint(Graphics g) throws JSONException{
         int xt = 1, yt = 2;
         g.setColor(Color.black);
-        //g.drawLine(x, y, x, y-10);
+        g.drawLine(cX, cY, cX, cY-12);
         for(int i = 0; i < p.size(); i++){
             yt += 12;
             p.get(i).paint(g, xt, yt);
@@ -57,12 +59,18 @@ public class Document {
     public void highlightTop(){//maybe input un one function
         if(i > 0){
             i--;
+            cY -= 12; 
         }
     }
     
     public void highlightBot(){//maybe input un one function
         if(i < (p.size()-1)){
             i++;
+            cY += 12;
         }
     }
+    
+//    public void aRight(){
+//        p.get(i).moveCursorR();
+//    }
 }
