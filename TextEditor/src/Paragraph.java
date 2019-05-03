@@ -11,8 +11,7 @@ public class Paragraph {
     
     JSONObject p = new JSONObject();
     ArrayList<JSONObject> t = new ArrayList();
-    int k = 0;
-    
+    Font font = new Font("Arial", Font.PLAIN, 15); 
     public Paragraph() throws JSONException{
         p.put("Text", "");
     }
@@ -20,46 +19,39 @@ public class Paragraph {
     public void paint(Graphics g, int x, int y) throws JSONException{       
         g.setColor(Color.black);         
         String nowWord = (String) p.get("Text");
-        g.setFont(new Font("TimesRoman", Font.PLAIN, 12)); 
+        //g.setFont(font); 
         g.drawString(nowWord, x, y);
     }
     
-    public void add(char tec) throws JSONException{
-        String nowWord = (String) p.get("Text"); 
-        nowWord += tec;
-        p.put("Text", nowWord);
+    public void add(char tec, int posCur) throws JSONException{
+        String str = (String) p.get("Text");
+        String str1 = str.substring(0, posCur);
+        String str2 = str.substring(posCur, str.length());
+        str = str1 + tec + str2;
+        p.put("Text", str);
     }
     
-    public void deletelast() throws JSONException{
-        String str = (String) p.get("Text"); 
-        if (str != null && str.length() > 0) {
-            str = str.substring(0, str.length() - 1);
-        }
-        
+    public void deleteElement(int posCur) throws JSONException{
+        String str = (String) p.get("Text");        
+        String str1 = str.substring(0, posCur-1);
+        String str2 = str.substring(posCur, str.length()); 
+        str = str1 + str2;
         p.put("Text", str);
     } 
     
-    private int posFromStart() throws JSONException{
+    public int posFromStart(int k, Graphics g) throws JSONException{
         String str = (String) p.get("Text");
         str = str.substring(0, k);
-        AffineTransform affinetransform = new AffineTransform();
-        FontRenderContext frc = new FontRenderContext(affinetransform,true,true);     
-        Font font = new Font("TimesRoman", Font.PLAIN, 12);//need change
-        int textwidth = (int)(font.getStringBounds(str, frc).getWidth());
+//        AffineTransform affinetransform = new AffineTransform();
+//        FontRenderContext frc = new FontRenderContext(affinetransform,true,true);     
+//        int textwidth = (int)(font.getStringBounds(str, frc).getWidth());
+        int textwidth = g.getFontMetrics().stringWidth(str);
         return(textwidth);        
     }
     
-    public int moveCursorR() throws JSONException{
+    public int length() throws JSONException{
         String str = (String) p.get("Text");
-        if(k < (str.length()-1)){
-            k++;
-            return(posFromStart());
-        }
-        else
-            return(posFromStart());
+        return(str.length());
     }
     
-//    private String(String str, int i, String instr){
-//        
-//    }
 }

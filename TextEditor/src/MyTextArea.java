@@ -51,36 +51,32 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
 
     @Override
     public void keyPressed(KeyEvent k) {
-        int key = k.getKeyCode();        
-        switch(key) {
-            case KeyEvent.VK_UP:
-                d1.highlightTop();
-            break;
-            case KeyEvent.VK_DOWN:
-                d1.highlightBot();
-            break;
-            case KeyEvent.VK_LEFT:
-
-            break;
-            case KeyEvent.VK_RIGHT:
-
-            break;
-            case KeyEvent.VK_ENTER:           
-                try {
+        try {
+            int key = k.getKeyCode();
+            switch(key) {
+                case KeyEvent.VK_UP:
+                    d1.highlightTop();
+                break;
+                case KeyEvent.VK_DOWN:
+                    d1.highlightBot();
+                break;
+                case KeyEvent.VK_LEFT:
+                    d1.moveCurLeft();
+                break;               
+                case KeyEvent.VK_RIGHT:
+                    d1.moveCurRight();
+                    break;
+                case KeyEvent.VK_ENTER:
                     d1.add();
-                } catch (JSONException ex) {
-                    Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
-                }            
-            break;
-            default:
-                try {
+                break;
+                default:
                     d1.rewritetec(k.getKeyChar());
-                } catch (JSONException ex) {
-                    Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
-                } 
-            break;
+                break;
+            }
+            repaint();
+        } catch (JSONException ex) {
+            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
         }
-        repaint();            
     }
 
     @Override
@@ -90,9 +86,8 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     
     @Override
     public void mouseClicked(MouseEvent e) {
-        d1.click();
+        d1.mClick(e.getX(), e.getY());
         repaint();
-        System.out.println(123);
     }
 
     @Override
