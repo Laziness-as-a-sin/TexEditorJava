@@ -22,7 +22,7 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
-    public Main() throws JSONException {
+    public Main() throws JSONException, IOException {
         initComponents();
         MyTextArea mainText = new MyTextArea();
         mainText.setVisible(true);
@@ -171,7 +171,7 @@ public class Main extends javax.swing.JFrame {
             public void run() {
                 try {
                     new Main().setVisible(true);
-                } catch (JSONException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

@@ -55,7 +55,7 @@ public class Document {
         int xt = 1, yt = 2;
         g.setColor(Color.black);
         g.setFont(new Font("Arial", Font.PLAIN, 15));
-        cX = p.get(i).posFromStart(posCur, g);
+        cX = p.get(i).posFromStart(posCur);
         cY = 14+i*12;        
         for(int i = 0; i < p.size(); i++){
             yt += 12;
@@ -66,7 +66,7 @@ public class Document {
             while(cX - mX < 0 && posCur < p.get(i).length()){
                 posCur++;
                 System.out.println(cX - mX);
-                cX = p.get(i).posFromStart(posCur, g);                
+                cX = p.get(i).posFromStart(posCur);                
             }
         }
         

@@ -8,8 +8,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 import org.json.JSONObject;
@@ -19,10 +23,11 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
 
     JSONObject doc = new JSONObject();
     Document d1 = new Document();
+    BufferedImage b;
     
-    public MyTextArea() throws JSONException
+    public MyTextArea() throws JSONException, IOException
     {
-       // doc.put(key, value)
+        this.b = ImageIO.read(new File("C://Users/Evgeniy/Desktop/Iav.jpg"));
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
@@ -32,8 +37,9 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
    
     @Override
     public void paint(Graphics g){
+        g.drawImage(b, 0, 0, this);
         g.setColor(Color.white);
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        //g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g.setColor(Color.black);
 
         try {
