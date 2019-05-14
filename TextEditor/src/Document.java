@@ -12,6 +12,9 @@ public class Document {
     int cX = 1, cY;
     int mX, mY;
     boolean mouseClick = false;
+    boolean cSwitch = false;
+    Font font1 = new Font("Arial", Font.PLAIN, 15);
+    int fontNum = 0;
     
     
     public Document() throws JSONException{
@@ -27,28 +30,61 @@ public class Document {
         cX = 1;
     }
     
-    public void delete(){
-        
+    public void switchFont(){
+        if(!cSwitch)
+            cSwitch = true;
+        else
+            cSwitch = false;
+        if(fontNum == 0){
+            fontNum = 1;
+            font1 = new Font("TimesRoman", Font.PLAIN, 12);
+        }
+        else{
+            fontNum = 0;
+            font1 = new Font("Arial", Font.PLAIN, 15);
+        }
+    }
+    
+    public void addSymb(char tecSymb) throws JSONException{
+        if(cSwitch){
+            cSwitch = false;
+            JSONObject f = new JSONObject();
+            f.put("type", 0);//0-text, 1-picture
+            f.put("text", "");
+            f.put("fontName", font1);
+            if(fontNum == 0)
+                f.put("fontSize", 15);
+            else
+                f.put("fontSize", 12);
+            f.put("color", Color.black);
+            f.put("width", 0);
+            f.put("height", 0);
+            f.put("length", 0);
+            p.get(i).add1(tecSymb, f);
+        }
+        else{
+            p.get(i).add(tecSymb);
+        }
     }
     
     public void rewritetec(char tec) throws JSONException{
-        if(tec == 8){
-            if(posCur > 0){                
-                p.get(i).deleteElement(posCur);
-                posCur--;
-            }
-            
-            if((i != 0) && (p.get(i).length() == 0)){
-                p.remove(i);
-                i -= 1;
-                posCur = p.get(i).length();
-            }
-        }
-        else{
-            p.get(i).add(tec, posCur);
-            posCur++;
-            //cX = p.get(i).posFromStart(posCur);
-        }
+//        if(tec == 8){
+//            if(posCur > 0){                
+//                p.get(i).deleteElement(posCur);
+//                posCur--;
+//            }
+//            
+//            if((i != 0) && (p.get(i).length() == 0)){
+//                p.remove(i);
+//                i -= 1;
+//                posCur = p.get(i).length();
+//            }
+//        }
+//        else{
+//            p.get(i).add(tec, posCur);
+//            posCur++;
+//            //cX = p.get(i).posFromStart(posCur);
+//        }
     }
     
     public void paint(Graphics g) throws JSONException{

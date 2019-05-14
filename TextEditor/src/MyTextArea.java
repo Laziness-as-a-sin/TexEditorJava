@@ -75,8 +75,12 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                 case KeyEvent.VK_ENTER:
                     d1.add();
                 break;
+                case KeyEvent.VK_TAB:
+                    d1.switchFont();
+                break;
                 default:
-                    d1.rewritetec(k.getKeyChar());
+                   // d1.rewritetec(k.getKeyChar());
+                    d1.addSymb(k.getKeyChar());
                 break;
             }
             repaint();

@@ -39,35 +39,30 @@ public class Paragraph {
 //        String nowWord = (String) p.get("Text");
 //        g.setFont(font); 
 //        g.drawString(nowWord, x, y);
-        int localX = 0, localY = 0;
+        int localX = x, localY = y;
+        int indexHeight = 0;
+        localY += (int) lineHeight.get(indexHeight);
         for(int i = 0; i < aText.size(); i++){
             g.setColor((Color) aText.get(i).get("color"));
             g.setFont((Font) aText.get(i).get("fontName"));
-            
+            g.drawString((String) aText.get(i).get("text"), localX, localY);
+            localX += (int) aText.get(i).get("width");
         }
     }
     
     public void add1(char tecSymb, JSONObject tecObj) throws JSONException{
-        if(aText.get(aText.size()-1).get("text") == ""){
-            aText.add(aText.size()-1, tecObj);
-        }
-        else{
-            aText.add(tecObj);
-        }
-        aText.get(aText.size()-1).put("text", tecSymb);
-        aText.get(aText.size()-1).put("width", widthTec((String) aText.get(aText.size()-1).get("text"),(Font) tecObj.get("font")));
+        aText.add(tecObj);
         if((int) tecObj.get("height") > (int) lineHeight.get(lineHeight.size()-1)){
             lineHeight.add(lineHeight.size()-1, tecObj.get("height"));
-        }
-            
+        } 
+        add(tecSymb);
     }
     
-    public void add(char tec, int posCur) throws JSONException{
-        String str = (String) p.get("Text");
-        String str1 = str.substring(0, posCur);
-        String str2 = str.substring(posCur, str.length());
-        str = str1 + tec + str2;
-        p.put("Text", str);
+    public void add(char tecSymb) throws JSONException{
+        String str = (String) aText.get(aText.size()-1).get("text");
+        str += tecSymb;
+        aText.get(aText.size()-1).put("text", str);
+        aText.get(aText.size()-1).put("width", widthTec((String) aText.get(0).get("text"),font));  
     }
     
     public void deleteElement(int posCur) throws JSONException{
