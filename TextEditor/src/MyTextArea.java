@@ -27,7 +27,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     
     public MyTextArea() throws JSONException, IOException
     {
-        this.b = ImageIO.read(new File("C://Users/Evgeniy/Desktop/Iav.jpg"));
+        this.b = ImageIO.read(new File("src/pic/lov.jpg"));
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
@@ -67,7 +67,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                     d1.highlightBot();
                 break;
                 case KeyEvent.VK_LEFT:
-                    d1.moveCurLeft();
+                    //d1.moveCurLeft();
                 break;               
                 case KeyEvent.VK_RIGHT:
                     d1.moveCurRight();
@@ -75,8 +75,9 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                 case KeyEvent.VK_ENTER:
                     d1.add();
                 break;
-                case KeyEvent.VK_TAB:
+                case KeyEvent.VK_F1:
                     d1.switchFont();
+                    System.out.println("VK_F1");
                 break;
                 default:
                    // d1.rewritetec(k.getKeyChar());

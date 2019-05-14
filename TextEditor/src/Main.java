@@ -50,6 +50,8 @@ public class Main extends javax.swing.JFrame {
         Open = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         Edic = new javax.swing.JMenuItem();
+        FontMenu = new javax.swing.JMenu();
+        fmFont = new javax.swing.JMenuItem();
 
         fileChooser.setDialogTitle("Мой открытый диалог");
         fileChooser.addActionListener(new java.awt.event.ActionListener() {
@@ -95,6 +97,13 @@ public class Main extends javax.swing.JFrame {
         jMenu2.add(Edic);
 
         jMenuBar1.add(jMenu2);
+
+        FontMenu.setText("Font");
+
+        fmFont.setText("jMenuItem1");
+        FontMenu.add(fmFont);
+
+        jMenuBar1.add(FontMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -182,8 +191,10 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem BCreate;
     private javax.swing.JMenuItem BSave;
     private javax.swing.JMenuItem Edic;
+    private javax.swing.JMenu FontMenu;
     private javax.swing.JMenuItem Open;
     private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JMenuItem fmFont;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;

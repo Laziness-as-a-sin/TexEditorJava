@@ -56,6 +56,18 @@
             </MenuItem>
           </SubComponents>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="FontMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Font"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="fmFont">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="jMenuItem1"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
       </SubComponents>
     </Menu>
   </NonVisualComponents>

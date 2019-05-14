@@ -31,36 +31,44 @@ public class Document {
     }
     
     public void switchFont(){
-        if(!cSwitch)
+        if(cSwitch == false)
             cSwitch = true;
         else
             cSwitch = false;
         if(fontNum == 0){
             fontNum = 1;
             font1 = new Font("TimesRoman", Font.PLAIN, 12);
+            //System.out.println("switchFont 12"+cSwitch);
         }
         else{
             fontNum = 0;
             font1 = new Font("Arial", Font.PLAIN, 15);
+            //System.out.println("switchFont 15"+cSwitch);
         }
+        
     }
     
     public void addSymb(char tecSymb) throws JSONException{
-        if(cSwitch){
+        if(cSwitch == true){
             cSwitch = false;
             JSONObject f = new JSONObject();
             f.put("type", 0);//0-text, 1-picture
             f.put("text", "");
-            f.put("fontName", font1);
-            if(fontNum == 0)
+            f.put("font", font1);
+            if(fontNum == 0){
                 f.put("fontSize", 15);
-            else
+                f.put("color", Color.black);
+            }
+            else{
                 f.put("fontSize", 12);
-            f.put("color", Color.black);
+                f.put("color", Color.red);
+            }           
+            
             f.put("width", 0);
             f.put("height", 0);
             f.put("length", 0);
             p.get(i).add1(tecSymb, f);
+            System.out.println("OOut");
         }
         else{
             p.get(i).add(tecSymb);
@@ -90,12 +98,12 @@ public class Document {
     public void paint(Graphics g) throws JSONException{
         int xt = 1, yt = 2;
         g.setColor(Color.black);
-        g.setFont(new Font("Arial", Font.PLAIN, 15));
+        //g.setFont(new Font("Arial", Font.PLAIN, 15));
         cX = p.get(i).posFromStart(posCur);
         cY = 14+i*12;        
-        for(int i = 0; i < p.size(); i++){
-            yt += 12;
+        for(int i = 0; i < p.size(); i++){            
             p.get(i).paint(g, xt, yt);
+            yt += p.get(i).paragraphHeigt();
         }
         if(mouseClick){
             mouseClick = false;

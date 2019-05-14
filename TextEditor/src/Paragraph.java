@@ -15,12 +15,13 @@ public class Paragraph {
     ArrayList lineHeight = new ArrayList();
     ArrayList<JSONObject>aText = new ArrayList();
     Font font = new Font("Arial", Font.PLAIN, 15);
+    int tecText = 0;
     
     public Paragraph() throws JSONException{
         JSONObject f = new JSONObject();
         f.put("type", 0);//0-text, 1-picture
         f.put("text", "");
-        f.put("fontName", font);
+        f.put("font", font);
         f.put("fontSize", 12);
         f.put("color", Color.black);
         f.put("width", 0);
@@ -44,9 +45,10 @@ public class Paragraph {
         localY += (int) lineHeight.get(indexHeight);
         for(int i = 0; i < aText.size(); i++){
             g.setColor((Color) aText.get(i).get("color"));
-            g.setFont((Font) aText.get(i).get("fontName"));
+            g.setFont((Font) aText.get(i).get("font"));
             g.drawString((String) aText.get(i).get("text"), localX, localY);
             localX += (int) aText.get(i).get("width");
+            System.out.println((Font) aText.get(i).get("font"));
         }
     }
     
@@ -54,15 +56,16 @@ public class Paragraph {
         aText.add(tecObj);
         if((int) tecObj.get("height") > (int) lineHeight.get(lineHeight.size()-1)){
             lineHeight.add(lineHeight.size()-1, tecObj.get("height"));
-        } 
-        add(tecSymb);
+        }
+        tecText++; 
+        add(tecSymb);       
     }
     
     public void add(char tecSymb) throws JSONException{
         String str = (String) aText.get(aText.size()-1).get("text");
         str += tecSymb;
         aText.get(aText.size()-1).put("text", str);
-        aText.get(aText.size()-1).put("width", widthTec((String) aText.get(0).get("text"),font));  
+        aText.get(aText.size()-1).put("width", widthTec((String) aText.get(tecText).get("text"), (Font) aText.get(tecText).get("font")));  
     }
     
     public void deleteElement(int posCur) throws JSONException{
@@ -95,5 +98,10 @@ public class Paragraph {
         return textWidth;
     } 
  
-    
+    public int paragraphHeigt(){
+        int heigt = 0;
+        for(int i = 0; i < lineHeight.size(); i++)
+            heigt += (int) lineHeight.get(i);
+        return heigt;
+    }
 }
