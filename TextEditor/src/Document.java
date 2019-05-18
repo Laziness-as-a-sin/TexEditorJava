@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.io.Serializable;
 
 public class Document {
     ArrayList<Paragraph> p = new ArrayList();
@@ -16,6 +17,7 @@ public class Document {
     Font font1 = new Font("Arial", Font.PLAIN, 15);
     int fontNum = 0;
     
+    private static final long serialVersionUID = 1L;
     
     public Document() throws JSONException{
         Paragraph zero = new Paragraph();

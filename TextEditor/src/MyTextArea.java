@@ -10,7 +10,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -18,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JTextArea;
 import org.json.JSONObject;
 import org.json.JSONException;
+import java.io.*;
 
 public class MyTextArea extends JComponent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener{
 
@@ -79,6 +83,12 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                     d1.switchFont();
                     System.out.println("VK_F1");
                 break;
+                case KeyEvent.VK_F2:
+                    save();
+                break;
+                case KeyEvent.VK_F3:
+                    load();
+                break;
                 default:
                    // d1.rewritetec(k.getKeyChar());
                     d1.addSymb(k.getKeyChar());
@@ -87,9 +97,34 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
             repaint();
         } catch (JSONException ex) {
             Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    private void save() throws FileNotFoundException, IOException{
+       //создаем 2 потока для сериализации объекта и сохранения его в файл
+       FileOutputStream outputStream = new FileOutputStream("D://save.ser");
+       ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+       // сохраняем игру в файл
+       objectOutputStream.writeObject(d1);
+
+       //закрываем поток и освобождаем ресурсы
+       objectOutputStream.close();
+    }
+    
+    private void load() throws FileNotFoundException, IOException, ClassNotFoundException{
+       FileInputStream fileInputStream = new FileInputStream("D://save.ser");
+       ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+       d1 = (Document) objectInputStream.readObject();
+
+       //System.out.println(savedGame)    
+    }
+    
     @Override
     public void keyReleased(KeyEvent k) {
     

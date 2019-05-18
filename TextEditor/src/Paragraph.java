@@ -8,6 +8,7 @@ import static java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 public class Paragraph {
     

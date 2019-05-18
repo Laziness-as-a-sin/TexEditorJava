@@ -26,11 +26,8 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         MyTextArea mainText = new MyTextArea();
         mainText.setVisible(true);
-        mainText.setBounds(0, 0, 500, 600);
-        
-        
-        this.add(mainText);
-        
+        mainText.setBounds(0, 0, 500, 600);        
+        this.add(mainText);       
     }
 
     /**
