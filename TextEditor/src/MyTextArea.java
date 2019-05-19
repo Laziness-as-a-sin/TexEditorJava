@@ -38,19 +38,19 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         this.addKeyListener(this); //где должен быть фокус
         setFocusable(true);
     }
-   
+    
     @Override
     public void paint(Graphics g){
         g.drawImage(b, 0, 0, this);
-        g.setColor(Color.white);
-        //g.fillRect(0, 0, this.getWidth(), this.getHeight());
-        g.setColor(Color.black);
-
         try {
             d1.paint(g);
         } catch (JSONException ex) {
             Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void buffPaint() throws JSONException{
+        d1.paint(b.getGraphics());
     }
     
     @Override
@@ -71,11 +71,11 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                     d1.highlightBot();
                 break;
                 case KeyEvent.VK_LEFT:
-                    //d1.moveCurLeft();
+                    d1.moveCurLeft();
                 break;               
                 case KeyEvent.VK_RIGHT:
                     d1.moveCurRight();
-                    break;
+                break;
                 case KeyEvent.VK_ENTER:
                     d1.add();
                 break;

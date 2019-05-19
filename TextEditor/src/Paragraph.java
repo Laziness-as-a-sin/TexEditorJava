@@ -12,11 +12,11 @@ import java.io.Serializable;
 
 public class Paragraph {
     
-    JSONObject p = new JSONObject();
     ArrayList lineHeight = new ArrayList();
     ArrayList<JSONObject>aText = new ArrayList();
     Font font = new Font("Arial", Font.PLAIN, 15);
-    int tecText = 0;
+    private int tecText = 0;
+    public int numSymbol = 0; 
     
     public Paragraph() throws JSONException{
         JSONObject f = new JSONObject();
@@ -26,21 +26,12 @@ public class Paragraph {
         f.put("fontSize", 12);
         f.put("color", Color.black);
         f.put("width", 0);
-        f.put("height", 0);
         f.put("length", 0);
         aText.add(f);
-        p.put("Text", "");
-        p.put("color", Color.black);
-        
         lineHeight.add(f.get("fontSize"));
     }
     
     public void paint(Graphics g, int x, int y) throws JSONException{       
-//        g.setColor(Color.black);
-//        g.setColor((Color) p.get("color"));
-//        String nowWord = (String) p.get("Text");
-//        g.setFont(font); 
-//        g.drawString(nowWord, x, y);
         int localX = x, localY = y;
         int indexHeight = 0;
         localY += (int) lineHeight.get(indexHeight);
@@ -49,7 +40,6 @@ public class Paragraph {
             g.setFont((Font) aText.get(i).get("font"));
             g.drawString((String) aText.get(i).get("text"), localX, localY);
             localX += (int) aText.get(i).get("width");
-            System.out.println((Font) aText.get(i).get("font"));
         }
     }
     
@@ -65,31 +55,42 @@ public class Paragraph {
     public void add(char tecSymb) throws JSONException{
         String str = (String) aText.get(aText.size()-1).get("text");
         str += tecSymb;
+        int length = (int) aText.get(aText.size()-1).get("length");
         aText.get(aText.size()-1).put("text", str);
-        aText.get(aText.size()-1).put("width", widthTec((String) aText.get(tecText).get("text"), (Font) aText.get(tecText).get("font")));  
+        aText.get(aText.size()-1).put("length", length+1);
+        aText.get(aText.size()-1).put("width", widthTec((String) aText.get(tecText).get("text"), (Font) aText.get(tecText).get("font")));
+        numSymbol++; 
     }
     
     public void deleteElement(int posCur) throws JSONException{
-        String str = (String) p.get("Text");        
-        String str1 = str.substring(0, posCur-1);
-        String str2 = str.substring(posCur, str.length()); 
-        str = str1 + str2;
-        p.put("Text", str);
+
     } 
     
-    public int posFromStart(int k/*, Graphics */) throws JSONException{
-        String str = (String) p.get("Text");
-        str = str.substring(0, k);
-        AffineTransform affinetransform = new AffineTransform();
-        FontRenderContext frc = new FontRenderContext(null,VALUE_TEXT_ANTIALIAS_DEFAULT,VALUE_FRACTIONALMETRICS_DEFAULT);     
-        int textwidth = (int)(font.getStringBounds(str, frc).getWidth());
-        //int textwidth = g.getFontMetrics().stringWidth(str);
-        return(textwidth);        
+    public int posFromStart(int k) throws JSONException{
+        int tecText1 = 0;
+        int i = 0, length =0;
+        while(i < k){
+            int tecLength = (int) aText.get(tecText1).get("length");
+            Font tecFont = (Font) aText.get(tecText1).get("font");
+            String tecString = (String) aText.get(tecText1).get("text");
+            int l = 0;
+            while(l < tecLength && i < k){
+                length += widthTec(tecString.substring(l, l+1), tecFont);
+                System.out.println("-----------------------"+k);
+                System.out.println(tecString.substring(l, l+1));
+                l++;
+                i++;
+            }
+            i++;
+            tecText1++;
+        }
+        return length;
     }
     
     public int length() throws JSONException{
-        String str = (String) p.get("Text");
-        return(str.length());
+        return 0;
+//        String str = (String) p.get("Text");
+//        return(str.length());
     }
     
     private int widthTec(String str, Font font){

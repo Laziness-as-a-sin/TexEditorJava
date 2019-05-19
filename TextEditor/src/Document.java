@@ -99,24 +99,15 @@ public class Document {
     
     public void paint(Graphics g) throws JSONException{
         int xt = 1, yt = 2;
-        g.setColor(Color.black);
-        //g.setFont(new Font("Arial", Font.PLAIN, 15));
-        cX = p.get(i).posFromStart(posCur);
-        cY = 14+i*12;        
-        for(int i = 0; i < p.size(); i++){            
-            p.get(i).paint(g, xt, yt);
-            yt += p.get(i).paragraphHeigt();
-        }
-        if(mouseClick){
-            mouseClick = false;
-            while(cX - mX < 0 && posCur < p.get(i).length()){
-                posCur++;
-                System.out.println(cX - mX);
-                cX = p.get(i).posFromStart(posCur);                
+        
+        for(int ik = 0; ik < p.size(); ik++){            
+            p.get(ik).paint(g, xt, yt);
+            yt += p.get(ik).paragraphHeigt();
+            if(i == ik){
+                g.drawLine(p.get(ik).posFromStart(posCur), yt, p.get(ik).posFromStart(posCur), yt-12);
+                System.out.println(posCur);
             }
         }
-        
-        g.drawLine(cX, cY, cX, cY-12);
     }
     
     public void mClick(int x, int y){
@@ -148,7 +139,7 @@ public class Document {
     }
     
     public void moveCurRight() throws JSONException{
-        if(posCur < p.get(i).length()){
+        if(posCur <= p.get(i).numSymbol){
             posCur++;
         }
     }
@@ -160,8 +151,8 @@ public class Document {
     }
     
     private void movePosCur() throws JSONException{
-        if(posCur > p.get(i).length()){
-            posCur = p.get(i).length();
+        if(posCur > p.get(i).numSymbol){
+            posCur = p.get(i).numSymbol;
         }
     }
 }
