@@ -12,15 +12,18 @@ import java.io.Serializable;
 
 public class Paragraph {
     
-    ArrayList lineHeight = new ArrayList();
-    ArrayList<JSONObject>aText = new ArrayList();
+    //ArrayList lineHeight = new ArrayList(); // Переделать, доделать когда будет перенос строк
+    int lineHeight;
+    ArrayList<JSONObject>aText = new ArrayList(); // Массив Text/Подпараграф'в
     Font font = new Font("Arial", Font.PLAIN, 15);
     private int tecText = 0;
-    public int numSymbol = 0; 
+    public int numSymbol = 0; // Общее число символов в параграфе
+    private int indexText = 0; //  Индекс текущего изменяемого подпараграфа
+    private int posCurInText; // Позиция курсора в текущем изменяемом подпараграфе
     
     public Paragraph() throws JSONException{
         JSONObject f = new JSONObject();
-        f.put("type", 0);//0-text, 1-picture
+        f.put("type", 0);// 0-text, 1-picture
         f.put("text", "");
         f.put("font", font);
         f.put("fontSize", 12);
@@ -28,13 +31,12 @@ public class Paragraph {
         f.put("width", 0);
         f.put("length", 0);
         aText.add(f);
-        lineHeight.add(f.get("fontSize"));
+        lineHeight= (int) f.get("fontSize");
     }
     
     public void paint(Graphics g, int x, int y) throws JSONException{       
         int localX = x, localY = y;
-        int indexHeight = 0;
-        localY += (int) lineHeight.get(indexHeight);
+        localY += lineHeight;
         for(int i = 0; i < aText.size(); i++){
             g.setColor((Color) aText.get(i).get("color"));
             g.setFont((Font) aText.get(i).get("font"));
@@ -43,22 +45,51 @@ public class Paragraph {
         }
     }
     
-    public void add1(char tecSymb, JSONObject tecObj) throws JSONException{
-        aText.add(tecObj);
-        if((int) tecObj.get("height") > (int) lineHeight.get(lineHeight.size()-1)){
-            lineHeight.add(lineHeight.size()-1, tecObj.get("height"));
+    public void addText(JSONObject tecObj, int posCur) throws JSONException{ // Добавление нового подпараграфа
+        numSymbol++;
+        setIndexText(posCur);
+        tecObj.put("width", widthTec((String) tecObj.get("text"), (Font) tecObj.get("font")));
+        
+        String str = (String) aText.get(indexText).get("text");
+        int length = (int) aText.get(indexText).get("length");
+        
+        if((int) tecObj.get("fontSize") > lineHeight){ // Высота параграфа (надо будет менять реалзацию)
+            lineHeight = (int) tecObj.get("fontSize");
         }
-        tecText++; 
-        add(tecSymb);       
+        
+        if(posCurInText == length && indexText == (aText.size()-1)){ // Если подпараграф последний
+            aText.add(tecObj);
+        }
+        else{ // Если подпараграф где-то внутри
+            String str1 = str.substring(0, posCurInText);
+            String str2 = str.substring(posCurInText, length);
+            JSONObject f = aText.get(indexText);
+            f.put("text", str2);
+            
+            aText.get(indexText).put("text", str1);
+            aText.get(indexText).put("length", str1.length());
+            aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
+            
+            aText.add(indexText+1, tecObj);
+            
+            aText.add(indexText+2, f);
+            aText.get(indexText+2).put("length", str2.length());
+            aText.get(indexText+2).put("width", widthTec((String) aText.get(indexText+2).get("text"), (Font) aText.get(indexText+2).get("font")));            
+        }
+        
+         
     }
     
-    public void add(char tecSymb) throws JSONException{
-        String str = (String) aText.get(aText.size()-1).get("text");
-        str += tecSymb;
-        int length = (int) aText.get(aText.size()-1).get("length");
-        aText.get(aText.size()-1).put("text", str);
-        aText.get(aText.size()-1).put("length", length+1);
-        aText.get(aText.size()-1).put("width", widthTec((String) aText.get(tecText).get("text"), (Font) aText.get(tecText).get("font")));
+    public void addSymbol(char tecSymb, int posCur) throws JSONException{ // Добавление символа в массив по индексу
+        setIndexText(posCur);
+        String str = (String) aText.get(indexText).get("text");
+        String str1 = str.substring(0, posCurInText);
+        int length = (int) aText.get(indexText).get("length");
+        String str2 = str.substring(posCurInText, length);
+        str = str1 + tecSymb + str2;    
+        aText.get(indexText).put("text", str);
+        aText.get(indexText).put("length", str.length());
+        aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
         numSymbol++; 
     }
     
@@ -76,10 +107,14 @@ public class Paragraph {
             int l = 0;
             while(l < tecLength && i < k){
                 length += widthTec(tecString.substring(l, l+1), tecFont);
-                System.out.println("-----------------------"+k);
-                System.out.println(tecString.substring(l, l+1));
                 l++;
                 i++;
+            }
+            if(i < k){
+                tecLength = (int) aText.get(tecText1+1).get("length");
+                tecFont = (Font) aText.get(tecText1+1).get("font");
+                tecString = (String) aText.get(tecText1+1).get("text");
+                length += widthTec(tecString.substring(0, 1), tecFont);
             }
             i++;
             tecText1++;
@@ -87,23 +122,38 @@ public class Paragraph {
         return length;
     }
     
-    public int length() throws JSONException{
-        return 0;
-//        String str = (String) p.get("Text");
-//        return(str.length());
-    }
-    
-    private int widthTec(String str, Font font){
-        AffineTransform affinetransform = new AffineTransform();
+    private int widthTec(String str, Font font){ // Количество пикселей занимаемых стрингом с заданым шрифтом
         FontRenderContext frc = new FontRenderContext(null,VALUE_TEXT_ANTIALIAS_DEFAULT,VALUE_FRACTIONALMETRICS_DEFAULT);     
         int textWidth = (int)(font.getStringBounds(str, frc).getWidth());
         return textWidth;
     } 
  
     public int paragraphHeigt(){
-        int heigt = 0;
-        for(int i = 0; i < lineHeight.size(); i++)
-            heigt += (int) lineHeight.get(i);
-        return heigt;
+//        int heigt = 0;
+//        for(int i = 0; i < lineHeight.size(); i++)
+//            heigt += (int) lineHeight.get(i);
+        return lineHeight;
+    }
+    
+    private void setIndexText(int posCur) throws JSONException{ // Индекс позиции курсора в массиве
+        int tecText1 = 0;
+        int i = 0, l = 0;
+        while(i < posCur){
+            int tecLength = (int) aText.get(tecText1).get("length");
+            
+            while(l < tecLength && i < posCur){
+                i++;
+                l++;
+            }
+            if(i < posCur){
+                tecText1++;                
+                l = 0;
+            }
+            i++;
+        }
+        System.out.println(tecText1);
+        System.out.println(l);
+        indexText = tecText1;
+        posCurInText = l;
     }
 }

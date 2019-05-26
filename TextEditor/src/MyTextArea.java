@@ -81,7 +81,6 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                 break;
                 case KeyEvent.VK_F1:
                     d1.switchFont();
-                    System.out.println("VK_F1");
                 break;
                 case KeyEvent.VK_F2:
                     save();

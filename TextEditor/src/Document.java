@@ -53,9 +53,10 @@ public class Document {
     public void addSymb(char tecSymb) throws JSONException{
         if(cSwitch == true){
             cSwitch = false;
+            String str = ""+tecSymb;
             JSONObject f = new JSONObject();
-            f.put("type", 0);//0-text, 1-picture
-            f.put("text", "");
+            f.put("type", 0); //0-text, 1-picture
+            f.put("text", str);
             f.put("font", font1);
             if(fontNum == 0){
                 f.put("fontSize", 15);
@@ -67,13 +68,15 @@ public class Document {
             }           
             
             f.put("width", 0);
-            f.put("height", 0);
-            f.put("length", 0);
-            p.get(i).add1(tecSymb, f);
-            System.out.println("OOut");
+            f.put("length", 1);
+            
+            p.get(i).addText(f, posCur);
+            System.out.println("Switch Font");
+            moveCurRight();
         }
-        else{
-            p.get(i).add(tecSymb);
+        else{           
+            p.get(i).addSymbol(tecSymb, posCur);
+            moveCurRight();
         }
     }
     
@@ -104,8 +107,7 @@ public class Document {
             p.get(ik).paint(g, xt, yt);
             yt += p.get(ik).paragraphHeigt();
             if(i == ik){
-                g.drawLine(p.get(ik).posFromStart(posCur), yt, p.get(ik).posFromStart(posCur), yt-12);
-                System.out.println(posCur);
+                g.drawLine(p.get(ik).posFromStart(posCur)+1, yt, p.get(ik).posFromStart(posCur)+1, yt-12);
             }
         }
     }
@@ -139,13 +141,16 @@ public class Document {
     }
     
     public void moveCurRight() throws JSONException{
-        if(posCur <= p.get(i).numSymbol){
+        if(posCur < p.get(i).numSymbol){
             posCur++;
+            System.out.println("Курсор двинулся");
+            System.out.println(posCur);
+            System.out.println("---------------");
         }
     }
     
     public void moveCurLeft() throws JSONException{
-        if(posCur > 0){
+        if(posCur >0){
             posCur--;
         }
     }
