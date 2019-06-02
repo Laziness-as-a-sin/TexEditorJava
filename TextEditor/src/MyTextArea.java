@@ -41,12 +41,14 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     
     @Override
     public void paint(Graphics g){
+        g.setColor(Color.white);
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g.drawImage(b, 0, 0, this);
-        try {
-            d1.paint(g);
-        } catch (JSONException ex) {
-            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            d1.paint(g);
+//        } catch (JSONException ex) {
+//            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
     
     public void buffPaint() throws JSONException{
@@ -93,7 +95,9 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                     d1.addSymb(k.getKeyChar());
                 break;
             }
-            repaint();
+//            repaint()
+        buffPaint();
+        repaint();
         } catch (JSONException ex) {
             Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -109,18 +113,18 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 
        // сохраняем игру в файл
-       objectOutputStream.writeObject(d1);
+       objectOutputStream.writeObject(d1.PrepareForSave());
 
        //закрываем поток и освобождаем ресурсы
        objectOutputStream.close();
     }
     
-    private void load() throws FileNotFoundException, IOException, ClassNotFoundException{
+    private void load() throws FileNotFoundException, IOException, ClassNotFoundException, JSONException{
        FileInputStream fileInputStream = new FileInputStream("D://save.ser");
        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
        d1 = (Document) objectInputStream.readObject();
-
+       d1.AfterLoad(d1);
        //System.out.println(savedGame)    
     }
     
@@ -132,7 +136,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     @Override
     public void mouseClicked(MouseEvent e) {
         d1.mClick(e.getX(), e.getY());
-        repaint();
+        //repaint();
     }
 
     @Override

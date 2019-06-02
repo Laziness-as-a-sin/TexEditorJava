@@ -6,9 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.Serializable;
 
-public class Document {
+public class Document implements Serializable{
     ArrayList<Paragraph> p = new ArrayList();
     ArrayList<JSONObject> cord = new ArrayList();
+    ArrayList<String> saveCord = new ArrayList();
     int i = 0, posCur = 0;
     int cX = 1, cY;
     int mX, mY;
@@ -30,6 +31,19 @@ public class Document {
         p.add(i, newParagraph);
         posCur = 0;
         cX = 1;
+    }
+    
+    public Document PrepareForSave(){
+        saveCord = new ArrayList();
+        for(int i = 0; i < cord.size(); i++){
+            saveCord.add(i, cord.get(i).toString());
+        }
+        return this;
+    }
+    public void AfterLoad(Document dl) throws JSONException{
+        for(int i = 0; i < saveCord.size(); i++){
+            cord.add(i,new JSONObject(saveCord.get(i)));
+        }
     }
     
     public void switchFont(){
@@ -100,14 +114,14 @@ public class Document {
 //        }
     }
     
-    public void paint(Graphics g) throws JSONException{
+    public void paint(Graphics b) throws JSONException{
         int xt = 1, yt = 2;
         
         for(int ik = 0; ik < p.size(); ik++){            
-            p.get(ik).paint(g, xt, yt);
+            p.get(ik).paint(b, xt, yt);
             yt += p.get(ik).paragraphHeigt();
-            if(i == ik){
-                g.drawLine(p.get(ik).posFromStart(posCur)+1, yt, p.get(ik).posFromStart(posCur)+1, yt-12);
+            if(i == ik){ // Курсор
+                b.drawLine(p.get(ik).posFromStart(posCur), yt, p.get(ik).posFromStart(posCur), yt-12);
             }
         }
     }
