@@ -14,12 +14,13 @@ public class Paragraph {
     
     //ArrayList lineHeight = new ArrayList(); // Переделать, доделать когда будет перенос строк
     int lineHeight;
-    ArrayList<JSONObject>aText = new ArrayList(); // Массив Text/Подпараграф'в
+    transient private ArrayList<JSONObject>aText = new ArrayList(); // Массив Text/Подпараграф'в
     Font font = new Font("Arial", Font.PLAIN, 15);
     private int tecText = 0;
     public int numSymbol = 0; // Общее число символов в параграфе
     private int indexText = 0; //  Индекс текущего изменяемого подпараграфа
     private int posCurInText; // Позиция курсора в текущем изменяемом подпараграфе
+    ArrayList<String> saveCord = new ArrayList(); // Сохраняемые подпараграфы
     
     public Paragraph() throws JSONException{
         JSONObject f = new JSONObject();
@@ -156,4 +157,19 @@ public class Paragraph {
         indexText = tecText1;
         posCurInText = l;
     }
+    
+    public Paragraph PrepareForSave(){
+        saveCord = new ArrayList();
+        for(int i = 0; i < aText.size(); i++){
+            saveCord.add(i, aText.get(i).toString());
+        }
+        return this;
+    }
+    public void AfterLoad(Paragraph dl) throws JSONException{
+        aText = new ArrayList();
+        for(int i = 0; i < saveCord.size(); i++){
+            aText.add(i,new JSONObject(saveCord.get(i)));
+        }
+    }
+    
 }

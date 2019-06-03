@@ -2,6 +2,14 @@ import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.Serializable;
@@ -9,8 +17,7 @@ import java.io.Serializable;
 public class Document implements Serializable{
     ArrayList<Paragraph> p = new ArrayList();
     ArrayList<JSONObject> cord = new ArrayList();
-    ArrayList<String> saveCord = new ArrayList();
-    int i = 0, posCur = 0;
+    int i = 0, posCur = 0, posCurY = 0;
     int cX = 1, cY;
     int mX, mY;
     boolean mouseClick = false;
@@ -33,19 +40,6 @@ public class Document implements Serializable{
         cX = 1;
     }
     
-    public Document PrepareForSave(){
-        saveCord = new ArrayList();
-        for(int i = 0; i < cord.size(); i++){
-            saveCord.add(i, cord.get(i).toString());
-        }
-        return this;
-    }
-    public void AfterLoad(Document dl) throws JSONException{
-        for(int i = 0; i < saveCord.size(); i++){
-            cord.add(i,new JSONObject(saveCord.get(i)));
-        }
-    }
-    
     public void switchFont(){
         if(cSwitch == false)
             cSwitch = true;
@@ -54,12 +48,10 @@ public class Document implements Serializable{
         if(fontNum == 0){
             fontNum = 1;
             font1 = new Font("TimesRoman", Font.PLAIN, 12);
-            //System.out.println("switchFont 12"+cSwitch);
         }
         else{
             fontNum = 0;
             font1 = new Font("Arial", Font.PLAIN, 15);
-            //System.out.println("switchFont 15"+cSwitch);
         }
         
     }
@@ -94,34 +86,16 @@ public class Document implements Serializable{
         }
     }
     
-    public void rewritetec(char tec) throws JSONException{
-//        if(tec == 8){
-//            if(posCur > 0){                
-//                p.get(i).deleteElement(posCur);
-//                posCur--;
-//            }
-//            
-//            if((i != 0) && (p.get(i).length() == 0)){
-//                p.remove(i);
-//                i -= 1;
-//                posCur = p.get(i).length();
-//            }
-//        }
-//        else{
-//            p.get(i).add(tec, posCur);
-//            posCur++;
-//            //cX = p.get(i).posFromStart(posCur);
-//        }
-    }
-    
-    public void paint(Graphics b) throws JSONException{
+    public void paint(Graphics b, int w, int h) throws JSONException{
+        b.setColor(Color.white);
+        b.fillRect(0, 0, w, h);
         int xt = 1, yt = 2;
         
         for(int ik = 0; ik < p.size(); ik++){            
             p.get(ik).paint(b, xt, yt);
             yt += p.get(ik).paragraphHeigt();
             if(i == ik){ // Курсор
-                b.drawLine(p.get(ik).posFromStart(posCur), yt, p.get(ik).posFromStart(posCur), yt-12);
+                b.drawLine(p.get(i).posFromStart(posCur), yt, p.get(i).posFromStart(posCur), yt-12);
             }
         }
     }
@@ -143,21 +117,19 @@ public class Document implements Serializable{
     public void highlightTop() throws JSONException{//maybe input un one function
         if(i > 0){
             i--;
-            movePosCur();
         }
     }
     
     public void highlightBot() throws JSONException{//maybe input un one function
         if(i < (p.size()-1)){
             i++;
-            movePosCur();
         }
     }
     
     public void moveCurRight() throws JSONException{
         if(posCur < p.get(i).numSymbol){
             posCur++;
-            System.out.println("Курсор двинулся");
+            System.out.println("Курсор двинулся right");
             System.out.println(posCur);
             System.out.println("---------------");
         }
@@ -169,9 +141,40 @@ public class Document implements Serializable{
         }
     }
     
-    private void movePosCur() throws JSONException{
-        if(posCur > p.get(i).numSymbol){
-            posCur = p.get(i).numSymbol;
+    public void save() throws FileNotFoundException, IOException{
+        for (int i = 0; i < p.size(); i++){
+            System.out.println("SAVE");
+            String name = "D://save" + i + ".ser";
+            //создаем 2 потока для сериализации объекта и сохранения его в файл
+            FileOutputStream outputStream = new FileOutputStream(name);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+            // сохраняем игру в файл
+            objectOutputStream.writeObject(p.get(i).PrepareForSave());
+
+            //закрываем поток и освобождаем ресурсы
+            objectOutputStream.close();
         }
+        FileWriter fileWriter = new FileWriter("D://saveStat.ser");
+        fileWriter.write(p.size());
+        fileWriter.close();
+        System.out.println("SAVE1");
     }
+    
+    public void load() throws FileNotFoundException, IOException, ClassNotFoundException, JSONException{
+        FileReader fr = new FileReader("D://saveStat.ser"); 
+        int k; 
+        while ((k=fr.read()) != -1){
+            System.out.print((char) k); 
+        } 
+        p = new ArrayList();
+        for (int i = 0; i < k; i++){
+            FileInputStream fileInputStream = new FileInputStream("D://save.ser");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+            p.add((Paragraph) objectInputStream.readObject());
+            p.get(i).AfterLoad(p.get(i));
+        }   
+    }
+    
 }

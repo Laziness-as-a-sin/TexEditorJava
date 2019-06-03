@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>jar:file:/C:/Users/Evgeniy/Desktop/TextEditor/lib/java-json.jar!/org/json/JSONObject.java</file>
-            <file>file:/C:/Users/Evgeniy/Desktop/TextEditor/src/MyTextArea.java</file>
-            <file>file:/C:/Users/Evgeniy/Desktop/TextEditor/src/Paragraph.java</file>
-            <file>file:/C:/Users/Evgeniy/Desktop/TextEditor/src/Document.java</file>
-            <file>file:/C:/Users/Evgeniy/Desktop/TextEditor/src/Main.java</file>
+            <file>file:/C:/Users/Pavel/Desktop/TextEditor/src/Document.java</file>
+            <file>file:/C:/Users/Pavel/Desktop/TextEditor/src/Paragraph.java</file>
+            <file>file:/C:/Users/Pavel/Desktop/TextEditor/src/MyTextArea.java</file>
+            <file>file:/C:/Users/Pavel/Desktop/TextEditor/src/Main.java</file>
         </group>
     </open-files>
 </project-private>

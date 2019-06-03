@@ -41,18 +41,11 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     
     @Override
     public void paint(Graphics g){
-        g.setColor(Color.white);
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g.drawImage(b, 0, 0, this);
-//        try {
-//            d1.paint(g);
-//        } catch (JSONException ex) {
-//            Logger.getLogger(MyTextArea.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
     
     public void buffPaint() throws JSONException{
-        d1.paint(b.getGraphics());
+        d1.paint(b.getGraphics(), this.getWidth(), this.getHeight());
     }
     
     @Override
@@ -84,14 +77,13 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                 case KeyEvent.VK_F1:
                     d1.switchFont();
                 break;
-                case KeyEvent.VK_F2:
+                case KeyEvent.VK_F5:
                     save();
                 break;
-                case KeyEvent.VK_F3:
+                case KeyEvent.VK_F6:
                     load();
                 break;
                 default:
-                   // d1.rewritetec(k.getKeyChar());
                     d1.addSymb(k.getKeyChar());
                 break;
             }
@@ -107,25 +99,12 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         }
     }
 
-    private void save() throws FileNotFoundException, IOException{
-       //создаем 2 потока для сериализации объекта и сохранения его в файл
-       FileOutputStream outputStream = new FileOutputStream("D://save.ser");
-       ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-
-       // сохраняем игру в файл
-       objectOutputStream.writeObject(d1.PrepareForSave());
-
-       //закрываем поток и освобождаем ресурсы
-       objectOutputStream.close();
+    private void save() throws IOException{
+        d1.save();
     }
     
-    private void load() throws FileNotFoundException, IOException, ClassNotFoundException, JSONException{
-       FileInputStream fileInputStream = new FileInputStream("D://save.ser");
-       ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-
-       d1 = (Document) objectInputStream.readObject();
-       d1.AfterLoad(d1);
-       //System.out.println(savedGame)    
+    private void load() throws IOException, FileNotFoundException, ClassNotFoundException, JSONException{
+        d1.load();
     }
     
     @Override
