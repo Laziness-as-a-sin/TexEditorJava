@@ -23,6 +23,7 @@ public class Document implements Serializable{
     boolean mouseClick = false;
     boolean cSwitch = false;
     Font font1 = new Font("Arial", Font.PLAIN, 15);
+    String fontSring = "Arial";
     int fontNum = 0;
     
     private static final long serialVersionUID = 1L;
@@ -48,10 +49,12 @@ public class Document implements Serializable{
         if(fontNum == 0){
             fontNum = 1;
             font1 = new Font("TimesRoman", Font.PLAIN, 12);
+            fontSring = "TimesRoman";
         }
         else{
             fontNum = 0;
             font1 = new Font("Arial", Font.PLAIN, 15);
+            fontSring = "Arial";
         }
         
     }
@@ -64,13 +67,18 @@ public class Document implements Serializable{
             f.put("type", 0); //0-text, 1-picture
             f.put("text", str);
             f.put("font", font1);
+            f.put("fontString", fontSring);
             if(fontNum == 0){
                 f.put("fontSize", 15);
-                f.put("color", Color.black);
+                f.put("colorR", 0);
+                f.put("colorG", 0);
+                f.put("colorB", 0);
             }
             else{
                 f.put("fontSize", 12);
-                f.put("color", Color.red);
+                f.put("colorR", 255);
+                f.put("colorG", 0);
+                f.put("colorB", 0);
             }           
             
             f.put("width", 0);
@@ -143,7 +151,6 @@ public class Document implements Serializable{
     
     public void save() throws FileNotFoundException, IOException{
         for (int i = 0; i < p.size(); i++){
-            System.out.println("SAVE");
             String name = "D://save" + i + ".ser";
             //создаем 2 потока для сериализации объекта и сохранения его в файл
             FileOutputStream outputStream = new FileOutputStream(name);
@@ -158,23 +165,27 @@ public class Document implements Serializable{
         FileWriter fileWriter = new FileWriter("D://saveStat.ser");
         fileWriter.write(p.size());
         fileWriter.close();
-        System.out.println("SAVE1");
+        System.out.println("SAVE");
     }
     
     public void load() throws FileNotFoundException, IOException, ClassNotFoundException, JSONException{
+        i = 0;
+        posCur = 0;
         FileReader fr = new FileReader("D://saveStat.ser"); 
         int k; 
-        while ((k=fr.read()) != -1){
-            System.out.print((char) k); 
-        } 
+        k=fr.read();
+
         p = new ArrayList();
+        System.out.println(k);
         for (int i = 0; i < k; i++){
-            FileInputStream fileInputStream = new FileInputStream("D://save.ser");
+            FileInputStream fileInputStream = new FileInputStream("D://save0.ser");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
             p.add((Paragraph) objectInputStream.readObject());
             p.get(i).AfterLoad(p.get(i));
-        }   
+            System.out.println("PRELOAD");
+        }
+        System.out.println("LOAD");
     }
     
 }

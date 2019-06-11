@@ -10,8 +10,8 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.io.Serializable;
 
-public class Paragraph {
-    
+public class Paragraph implements Serializable{
+     private static final long serialVersionUID = 1L;
     //ArrayList lineHeight = new ArrayList(); // Переделать, доделать когда будет перенос строк
     int lineHeight;
     transient private ArrayList<JSONObject>aText = new ArrayList(); // Массив Text/Подпараграф'в
@@ -20,15 +20,18 @@ public class Paragraph {
     public int numSymbol = 0; // Общее число символов в параграфе
     private int indexText = 0; //  Индекс текущего изменяемого подпараграфа
     private int posCurInText; // Позиция курсора в текущем изменяемом подпараграфе
-    ArrayList<String> saveCord = new ArrayList(); // Сохраняемые подпараграфы
+    ArrayList<String> saveText = new ArrayList(); // Сохраняемые подпараграфы
     
     public Paragraph() throws JSONException{
         JSONObject f = new JSONObject();
         f.put("type", 0);// 0-text, 1-picture
         f.put("text", "");
         f.put("font", font);
-        f.put("fontSize", 12);
-        f.put("color", Color.black);
+        f.put("fontString", "Arial");
+        f.put("fontSize", 15);
+        f.put("colorR", 0);
+        f.put("colorG", 0);
+        f.put("colorB", 0);
         f.put("width", 0);
         f.put("length", 0);
         aText.add(f);
@@ -39,7 +42,7 @@ public class Paragraph {
         int localX = x, localY = y;
         localY += lineHeight;
         for(int i = 0; i < aText.size(); i++){
-            g.setColor((Color) aText.get(i).get("color"));
+            g.setColor(new Color((int)aText.get(i).get("colorR"),(int)aText.get(i).get("colorG"),(int)aText.get(i).get("colorB")));
             g.setFont((Font) aText.get(i).get("font"));
             g.drawString((String) aText.get(i).get("text"), localX, localY);
             localX += (int) aText.get(i).get("width");
@@ -159,16 +162,19 @@ public class Paragraph {
     }
     
     public Paragraph PrepareForSave(){
-        saveCord = new ArrayList();
+        saveText = new ArrayList();
         for(int i = 0; i < aText.size(); i++){
-            saveCord.add(i, aText.get(i).toString());
+            saveText.add(aText.get(i).toString());
         }
         return this;
     }
+    
     public void AfterLoad(Paragraph dl) throws JSONException{
         aText = new ArrayList();
-        for(int i = 0; i < saveCord.size(); i++){
-            aText.add(i,new JSONObject(saveCord.get(i)));
+        for(int i = 0; i < saveText.size(); i++){
+            System.out.println(saveText.get(i));
+            aText.add(new JSONObject(saveText.get(i)));
+            aText.get(i).put("font", new Font((String) aText.get(i).get("fontString"), Font.PLAIN, (int) aText.get(i).get("fontSize")));
         }
     }
     
