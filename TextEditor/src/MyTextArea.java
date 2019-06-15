@@ -75,7 +75,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                     d1.add();
                 break;
                 case KeyEvent.VK_F1:
-                    d1.switchFont();
+                    
                 break;
                 case KeyEvent.VK_F5:
                     save();
@@ -151,6 +151,18 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
               
+    }
+    
+    public void switchFont(String FontString) throws JSONException{
+        d1.switchFont(FontString);
+    }
+    
+    public void switchColor(int R, int G, int B) throws JSONException{
+        d1.switchColor(R, G, B);
+    }
+    
+    public void switchSize(int fontSize) throws JSONException{
+        d1.switchSize(fontSize);
     }
 
 

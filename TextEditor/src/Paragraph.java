@@ -43,49 +43,136 @@ public class Paragraph implements Serializable{
         localY += lineHeight;
         for(int i = 0; i < aText.size(); i++){
             g.setColor(new Color((int)aText.get(i).get("colorR"),(int)aText.get(i).get("colorG"),(int)aText.get(i).get("colorB")));
+            System.out.println("color "+(int)aText.get(i).get("colorR")+" "+(int)aText.get(i).get("colorG")+" "+(int)aText.get(i).get("colorB")+" "+i);
             g.setFont((Font) aText.get(i).get("font"));
             g.drawString((String) aText.get(i).get("text"), localX, localY);
             localX += (int) aText.get(i).get("width");
         }
     }
     
-    public void addText(JSONObject tecObj, int posCur) throws JSONException{ // Добавление нового подпараграфа
-        numSymbol++;
-        setIndexText(posCur);
-        tecObj.put("width", widthTec((String) tecObj.get("text"), (Font) tecObj.get("font")));
-        
-        String str = (String) aText.get(indexText).get("text");
-        int length = (int) aText.get(indexText).get("length");
-        
-        if((int) tecObj.get("fontSize") > lineHeight){ // Высота параграфа (надо будет менять реалзацию)
-            lineHeight = (int) tecObj.get("fontSize");
-        }
-        
-        if(posCurInText == length && indexText == (aText.size()-1)){ // Если подпараграф последний
-            aText.add(tecObj);
-        }
-        else{ // Если подпараграф где-то внутри
-            String str1 = str.substring(0, posCurInText);
-            String str2 = str.substring(posCurInText, length);
-            JSONObject f = aText.get(indexText);
-            f.put("text", str2);
-            
-            aText.get(indexText).put("text", str1);
-            aText.get(indexText).put("length", str1.length());
-            aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
-            
-            aText.add(indexText+1, tecObj);
-            
-            aText.add(indexText+2, f);
-            aText.get(indexText+2).put("length", str2.length());
-            aText.get(indexText+2).put("width", widthTec((String) aText.get(indexText+2).get("text"), (Font) aText.get(indexText+2).get("font")));            
-        }
-        
-         
+    public void addText(JSONObject tecObj, char symbol, int posCur) throws JSONException{ // Добавление нового подпараграфа
+        //numSymbol++;
+//        setIndexText(posCur);
+//        switchInFont.put("fontString", tecObj.get("fontString"));
+//        switchInFont.put("fontSize", tecObj.get("fontSize"));
+//        switchInFont.put("colorR", tecObj.get("colorR"));
+//        switchInFont.put("colorG", tecObj.get("colorG"));
+//        switchInFont.put("colorB", tecObj.get("colorB"));
+//        switchInFont.put("font", new Font((String) tecObj.get("fontString"), Font.PLAIN, (int) tecObj.get("fontSize")));
+//        
+//        if(posCur == 0){
+//            aText.add(0, switchInFont);
+//            addSymbol(symbol, 0);
+//        }
+     
+//        tecObj.put("width", widthTec((String) tecObj.get("text"), (Font) tecObj.get("font")));
+//        
+//        String str = (String) aText.get(indexText).get("text");
+//        int length = (int) aText.get(indexText).get("length");
+//        
+//        if((int) tecObj.get("fontSize") > lineHeight){ // Высота параграфа (надо будет менять реалзацию)
+//            lineHeight = (int) tecObj.get("fontSize");
+//        }
+//        
+//        if(posCurInText == length && indexText == (aText.size()-1)){ // Если подпараграф последний
+//            aText.add(tecObj);
+//        }
+//        else{ // Если подпараграф где-то внутри
+//            String str1 = str.substring(0, posCurInText);
+//            String str2 = str.substring(posCurInText, length);
+//            JSONObject f = aText.get(indexText);
+//            f.put("text", str2);
+//            
+//            aText.get(indexText).put("text", str1);
+//            aText.get(indexText).put("length", str1.length());
+//            aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
+//            
+//            aText.add(indexText+1, tecObj);
+//            
+//            aText.add(indexText+2, f);
+//            aText.get(indexText+2).put("length", str2.length());
+//            aText.get(indexText+2).put("width", widthTec((String) aText.get(indexText+2).get("text"), (Font) aText.get(indexText+2).get("font")));            
+//        }                 
     }
     
-    public void addSymbol(char tecSymb, int posCur) throws JSONException{ // Добавление символа в массив по индексу
+    public void addSymbol(char tecSymb, int posCur, JSONObject inJson) throws JSONException{ // Добавление символа в массив по индексу
         setIndexText(posCur);
+        if(!checkChangeFont(inJson, aText.get(indexText))){
+            addSimple(tecSymb);
+        }
+        else{
+            JSONObject f = new JSONObject();
+            f.put("type", 0);// 0-text, 1-picture
+            f.put("text", "");
+            f.put("fontString", (String) inJson.get("fontString"));
+            f.put("fontSize", (int) inJson.get("fontSize"));
+            f.put("colorR", (int) inJson.get("colorR"));
+            f.put("colorG", (int) inJson.get("colorG"));
+            f.put("colorB", (int) inJson.get("colorB"));
+            f.put("width", 0);
+            f.put("length", 0);
+            f.put("font", new Font((String) f.get("fontString"), Font.PLAIN, (int) f.get("fontSize")));
+
+
+            if(posCur == 0){
+                aText.add(0, f);
+                addSimple(tecSymb);
+            }
+            else
+                if(indexText == aText.size()-1 && (int)aText.get(indexText).get("length") == posCurInText){
+                    aText.add(f);
+                    indexText++;
+                    posCurInText = 0;
+                    addSimple(tecSymb);                
+                }
+                else
+                    if((int)aText.get(indexText).get("length") == posCurInText){
+                        aText.add(indexText+1, f);
+                        indexText++;
+                        posCurInText = 0;
+                        addSimple(tecSymb); 
+                    }
+                    else{
+                        JSONObject xxx = aText.get(indexText);
+                        String str = (String) aText.get(indexText).get("text");
+                        int length = (int) aText.get(indexText).get("length");                       
+                        String str1 = str.substring(0, posCurInText);
+                        String str2 = str.substring(posCurInText, length);
+                        System.out.println(str1 +" "+ str2);
+                        JSONObject a = new JSONObject();
+                        a.put("type", 0);// 0-text, 1-picture
+                        a.put("text", str1);
+                        a.put("fontString", (String) xxx.get("fontString"));
+                        a.put("fontSize", (int) xxx.get("fontSize"));
+                        a.put("colorR", (int) xxx.get("colorR"));
+                        a.put("colorG", (int) xxx.get("colorG"));
+                        a.put("colorB", (int) xxx.get("colorB"));
+                        a.put("font", new Font((String) a.get("fontString"), Font.PLAIN, (int) a.get("fontSize")));
+
+                        a.put("length", str1.length());
+                        a.put("width", widthTec((String) a.get("text"), (Font) a.get("font")));
+                        aText.remove(indexText);
+                        aText.add(indexText, a);
+                        
+                        
+                        aText.add(indexText+1, f);
+                        int kooooo = indexText+2;
+                        JSONObject b = xxx;
+                        b.put("text", str2);
+                        b.put("length", str2.length());
+                        b.put("width", widthTec((String) b.get("text"), (Font) b.get("font")));
+                        aText.add(kooooo, b);
+                        
+                        indexText++;
+                        posCurInText = 0;
+                        addSimple(tecSymb); 
+                    }
+        }
+        System.out.println("Size aText = "+aText.size());
+        numSymbol++; 
+    }
+    
+    private void addSimple(char tecSymb) throws JSONException{
         String str = (String) aText.get(indexText).get("text");
         String str1 = str.substring(0, posCurInText);
         int length = (int) aText.get(indexText).get("length");
@@ -93,8 +180,7 @@ public class Paragraph implements Serializable{
         str = str1 + tecSymb + str2;    
         aText.get(indexText).put("text", str);
         aText.get(indexText).put("length", str.length());
-        aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
-        numSymbol++; 
+        aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));        
     }
     
     public void deleteElement(int posCur) throws JSONException{
@@ -153,10 +239,8 @@ public class Paragraph implements Serializable{
                 tecText1++;                
                 l = 0;
             }
-            i++;
+            //i++;
         }
-        System.out.println(tecText1);
-        System.out.println(l);
         indexText = tecText1;
         posCurInText = l;
     }
@@ -177,5 +261,19 @@ public class Paragraph implements Serializable{
             aText.get(i).put("font", new Font((String) aText.get(i).get("fontString"), Font.PLAIN, (int) aText.get(i).get("fontSize")));
         }
     }
+    
+    private boolean checkChangeFont(JSONObject one, JSONObject second) throws JSONException{
+        if((String)one.get("fontString") != (String)second.get("fontString"))
+            return true;
+        if((int)one.get("fontSize") != (int)second.get("fontSize"))
+            return true;
+        if((int)one.get("colorR") != (int)second.get("colorR"))
+            return true;
+        if((int)one.get("colorG") != (int)second.get("colorG"))
+            return true;
+        if((int)one.get("colorB") != (int)second.get("colorB"))
+            return true;
+        return false; // изменений нет
+    } 
     
 }

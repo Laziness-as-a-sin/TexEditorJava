@@ -22,15 +22,21 @@ public class Document implements Serializable{
     int mX, mY;
     boolean mouseClick = false;
     boolean cSwitch = false;
-    Font font1 = new Font("Arial", Font.PLAIN, 15);
+    Font font = new Font("Arial", Font.PLAIN, 15);
     String fontSring = "Arial";
     int fontNum = 0;
-    
+    JSONObject putFont = new JSONObject();   
     private static final long serialVersionUID = 1L;
     
     public Document() throws JSONException{
         Paragraph zero = new Paragraph();
         p.add(zero);
+        putFont.put("type", 0);// 0-text, 1-picture
+        putFont.put("fontString", "Arial");
+        putFont.put("fontSize", 15);
+        putFont.put("colorR", 0);
+        putFont.put("colorG", 0);
+        putFont.put("colorB", 0);
     }
     
     public void add() throws JSONException{
@@ -41,57 +47,23 @@ public class Document implements Serializable{
         cX = 1;
     }
     
-    public void switchFont(){
-        if(cSwitch == false)
-            cSwitch = true;
-        else
-            cSwitch = false;
-        if(fontNum == 0){
-            fontNum = 1;
-            font1 = new Font("TimesRoman", Font.PLAIN, 12);
-            fontSring = "TimesRoman";
-        }
-        else{
-            fontNum = 0;
-            font1 = new Font("Arial", Font.PLAIN, 15);
-            fontSring = "Arial";
-        }
-        
+    public void switchFont(String FontString) throws JSONException{
+        putFont.put("FontString", FontString);       
     }
     
-    public void addSymb(char tecSymb) throws JSONException{
-        if(cSwitch == true){
-            cSwitch = false;
-            String str = ""+tecSymb;
-            JSONObject f = new JSONObject();
-            f.put("type", 0); //0-text, 1-picture
-            f.put("text", str);
-            f.put("font", font1);
-            f.put("fontString", fontSring);
-            if(fontNum == 0){
-                f.put("fontSize", 15);
-                f.put("colorR", 0);
-                f.put("colorG", 0);
-                f.put("colorB", 0);
-            }
-            else{
-                f.put("fontSize", 12);
-                f.put("colorR", 255);
-                f.put("colorG", 0);
-                f.put("colorB", 0);
-            }           
-            
-            f.put("width", 0);
-            f.put("length", 1);
-            
-            p.get(i).addText(f, posCur);
-            System.out.println("Switch Font");
-            moveCurRight();
-        }
-        else{           
-            p.get(i).addSymbol(tecSymb, posCur);
-            moveCurRight();
-        }
+    public void switchColor(int R, int G, int B) throws JSONException{
+        putFont.put("colorR", R);
+        putFont.put("colorG", G);
+        putFont.put("colorB", B);
+    }
+    
+    public void switchSize(int fontSize) throws JSONException{
+        putFont.put("fontSize", fontSize);
+    }
+    
+    public void addSymb(char tecSymb) throws JSONException{         
+        p.get(i).addSymbol(tecSymb, posCur, putFont);
+        moveCurRight();
     }
     
     public void paint(Graphics b, int w, int h) throws JSONException{
@@ -146,6 +118,9 @@ public class Document implements Serializable{
     public void moveCurLeft() throws JSONException{
         if(posCur >0){
             posCur--;
+            System.out.println("Курсор двинулся left");
+            System.out.println(posCur);
+            System.out.println("---------------");
         }
     }
     
@@ -178,7 +153,7 @@ public class Document implements Serializable{
         p = new ArrayList();
         System.out.println(k);
         for (int i = 0; i < k; i++){
-            FileInputStream fileInputStream = new FileInputStream("D://save0.ser");
+            FileInputStream fileInputStream = new FileInputStream("D://save"+i+".ser");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
             p.add((Paragraph) objectInputStream.readObject());
