@@ -1,6 +1,8 @@
 import java.util.Vector;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -83,6 +85,13 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
                 case KeyEvent.VK_F6:
                     load();
                 break;
+                case KeyEvent.VK_F4:
+                    Point posCursor = MouseInfo.getPointerInfo().getLocation();
+                    d1.changePosPic(posCursor.x, posCursor.y);
+                break;
+                case KeyEvent.VK_BACK_SPACE:
+                    d1.deletElement();
+                break;
                 default:
                     d1.addSymb(k.getKeyChar());
                 break;
@@ -145,7 +154,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
 
     @Override
     public void mouseMoved(MouseEvent e) {
-      
+          
     }
 
     @Override
@@ -165,5 +174,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         d1.switchSize(fontSize);
     }
 
-
+    public void addPic(File file) throws IOException{
+        d1.addPic(file);
+    }
 }

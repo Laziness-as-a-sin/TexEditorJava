@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,6 +17,7 @@ import java.io.Serializable;
 
 public class Document implements Serializable{
     ArrayList<Paragraph> p = new ArrayList();
+    ArrayList<Picture> pictureArr = new ArrayList();
     ArrayList<JSONObject> cord = new ArrayList();
     int i = 0, posCur = 0, posCurY = 0;
     int cX = 1, cY;
@@ -77,6 +79,10 @@ public class Document implements Serializable{
             if(i == ik){ // Курсор
                 b.drawLine(p.get(i).posFromStart(posCur), yt, p.get(i).posFromStart(posCur), yt-12);
             }
+        }
+        
+        for(int ik = 0; ik < pictureArr.size(); ik++){ 
+            pictureArr.get(ik).paint(b);
         }
     }
     
@@ -143,6 +149,11 @@ public class Document implements Serializable{
         System.out.println("SAVE");
     }
     
+    public void addPic(File file) throws IOException{
+        Picture f = new Picture(file);
+        pictureArr.add(f);
+    }
+    
     public void load() throws FileNotFoundException, IOException, ClassNotFoundException, JSONException{
         i = 0;
         posCur = 0;
@@ -163,4 +174,16 @@ public class Document implements Serializable{
         System.out.println("LOAD");
     }
     
+    public void changePosPic(int x, int y){
+        if(pictureArr.size() > 0){
+            pictureArr.get(pictureArr.size()-1).changePos(x, y);
+        }
+    }
+    
+    public void deletElement() throws JSONException{
+        if(posCur > 0){
+            p.get(i).deleteElement(posCur);
+        }
+        moveCurLeft();
+    }   
 }

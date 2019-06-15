@@ -50,51 +50,6 @@ public class Paragraph implements Serializable{
         }
     }
     
-    public void addText(JSONObject tecObj, char symbol, int posCur) throws JSONException{ // Добавление нового подпараграфа
-        //numSymbol++;
-//        setIndexText(posCur);
-//        switchInFont.put("fontString", tecObj.get("fontString"));
-//        switchInFont.put("fontSize", tecObj.get("fontSize"));
-//        switchInFont.put("colorR", tecObj.get("colorR"));
-//        switchInFont.put("colorG", tecObj.get("colorG"));
-//        switchInFont.put("colorB", tecObj.get("colorB"));
-//        switchInFont.put("font", new Font((String) tecObj.get("fontString"), Font.PLAIN, (int) tecObj.get("fontSize")));
-//        
-//        if(posCur == 0){
-//            aText.add(0, switchInFont);
-//            addSymbol(symbol, 0);
-//        }
-     
-//        tecObj.put("width", widthTec((String) tecObj.get("text"), (Font) tecObj.get("font")));
-//        
-//        String str = (String) aText.get(indexText).get("text");
-//        int length = (int) aText.get(indexText).get("length");
-//        
-//        if((int) tecObj.get("fontSize") > lineHeight){ // Высота параграфа (надо будет менять реалзацию)
-//            lineHeight = (int) tecObj.get("fontSize");
-//        }
-//        
-//        if(posCurInText == length && indexText == (aText.size()-1)){ // Если подпараграф последний
-//            aText.add(tecObj);
-//        }
-//        else{ // Если подпараграф где-то внутри
-//            String str1 = str.substring(0, posCurInText);
-//            String str2 = str.substring(posCurInText, length);
-//            JSONObject f = aText.get(indexText);
-//            f.put("text", str2);
-//            
-//            aText.get(indexText).put("text", str1);
-//            aText.get(indexText).put("length", str1.length());
-//            aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
-//            
-//            aText.add(indexText+1, tecObj);
-//            
-//            aText.add(indexText+2, f);
-//            aText.get(indexText+2).put("length", str2.length());
-//            aText.get(indexText+2).put("width", widthTec((String) aText.get(indexText+2).get("text"), (Font) aText.get(indexText+2).get("font")));            
-//        }                 
-    }
-    
     public void addSymbol(char tecSymb, int posCur, JSONObject inJson) throws JSONException{ // Добавление символа в массив по индексу
         setIndexText(posCur);
         if(!checkChangeFont(inJson, aText.get(indexText))){
@@ -138,7 +93,7 @@ public class Paragraph implements Serializable{
                         int length = (int) aText.get(indexText).get("length");                       
                         String str1 = str.substring(0, posCurInText);
                         String str2 = str.substring(posCurInText, length);
-                        System.out.println(str1 +" "+ str2);
+
                         JSONObject a = new JSONObject();
                         a.put("type", 0);// 0-text, 1-picture
                         a.put("text", str1);
@@ -168,7 +123,6 @@ public class Paragraph implements Serializable{
                         addSimple(tecSymb); 
                     }
         }
-        System.out.println("Size aText = "+aText.size());
         numSymbol++; 
     }
     
@@ -184,7 +138,27 @@ public class Paragraph implements Serializable{
     }
     
     public void deleteElement(int posCur) throws JSONException{
-
+        setIndexText(posCur);
+        if((int) aText.get(indexText).get("length") == 1){
+            if(indexText != 0)
+                aText.remove(indexText);
+            else{
+                aText.get(indexText).put("text", "");
+                aText.get(indexText).put("length", 0);
+                aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
+            }
+        }
+        else{
+            String str = (String) aText.get(indexText).get("text");
+            String str1 = str.substring(0, posCurInText-1);
+            int length = (int) aText.get(indexText).get("length");
+            String str2 = str.substring(posCurInText, length);
+            str = str1 + str2;    
+            aText.get(indexText).put("text", str);
+            aText.get(indexText).put("length", str.length());
+            aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
+        }
+        numSymbol--;
     } 
     
     public int posFromStart(int k) throws JSONException{
