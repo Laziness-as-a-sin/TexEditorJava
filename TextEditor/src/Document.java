@@ -102,12 +102,16 @@ public class Document implements Serializable{
     
     public void highlightTop() throws JSONException{//maybe input un one function
         if(i > 0){
+            if(posCur > p.get(i-1).numSymbol)
+                posCur = p.get(i-1).numSymbol;
             i--;
         }
     }
     
     public void highlightBot() throws JSONException{//maybe input un one function
         if(i < (p.size()-1)){
+            if(posCur > p.get(i+1).numSymbol)
+                posCur = p.get(i+1).numSymbol;
             i++;
         }
     }
@@ -181,9 +185,15 @@ public class Document implements Serializable{
     }
     
     public void deletElement() throws JSONException{
-        if(posCur > 0){
-            p.get(i).deleteElement(posCur);
+        if(p.get(i).numSymbol == 0 && i > 0){
+            p.remove(i);
+            highlightTop();
+            posCur = p.get(i).numSymbol;
         }
-        moveCurLeft();
+        else{
+            p.get(i).deleteElement(posCur);
+            moveCurLeft();
+        }
+        
     }   
 }
