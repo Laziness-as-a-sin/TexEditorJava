@@ -143,7 +143,7 @@ public class Paragraph implements Serializable{
             if(indexText != 0)
                 aText.remove(indexText);
             else{
-                aText.get(indexText).put("text", "");
+//                aText.get(indexText).put("text", "");
                 aText.get(indexText).put("length", 0);
                 aText.get(indexText).put("width", widthTec((String) aText.get(indexText).get("text"), (Font) aText.get(indexText).get("font")));
             }

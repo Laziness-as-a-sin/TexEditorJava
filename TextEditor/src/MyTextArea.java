@@ -46,7 +46,7 @@ public class MyTextArea extends JComponent implements MouseListener, MouseMotion
         g.drawImage(b, 0, 0, this);
     }
     
-    public void buffPaint() throws JSONException{
+    public void buffPaint() throws JSONException, IOException{
         d1.paint(b.getGraphics(), this.getWidth(), this.getHeight());
     }
     

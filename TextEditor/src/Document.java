@@ -68,7 +68,7 @@ public class Document implements Serializable{
         moveCurRight();
     }
     
-    public void paint(Graphics b, int w, int h) throws JSONException{
+    public void paint(Graphics b, int w, int h) throws JSONException, IOException{
         b.setColor(Color.white);
         b.fillRect(0, 0, w, h);
         int xt = 1, yt = 2;
@@ -136,7 +136,7 @@ public class Document implements Serializable{
     
     public void save() throws FileNotFoundException, IOException{
         for (int i = 0; i < p.size(); i++){
-            String name = "D://save" + i + ".ser";
+            String name = "D://saveText" + i + ".ser";
             //создаем 2 потока для сериализации объекта и сохранения его в файл
             FileOutputStream outputStream = new FileOutputStream(name);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
@@ -147,9 +147,24 @@ public class Document implements Serializable{
             //закрываем поток и освобождаем ресурсы
             objectOutputStream.close();
         }
-        FileWriter fileWriter = new FileWriter("D://saveStat.ser");
+        for (int i = 0; i < pictureArr.size(); i++){
+            String name = "D://savePic" + i + ".ser";
+            //создаем 2 потока для сериализации объекта и сохранения его в файл
+            FileOutputStream outputStream = new FileOutputStream(name);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+            // сохраняем игру в файл
+            objectOutputStream.writeObject(pictureArr.get(i));
+
+            //закрываем поток и освобождаем ресурсы
+            objectOutputStream.close();
+        }
+        FileWriter fileWriter = new FileWriter("D://saveStatText.ser");
         fileWriter.write(p.size());
         fileWriter.close();
+        FileWriter fileWriter1 = new FileWriter("D://saveStatPic.ser");
+        fileWriter1.write(pictureArr.size());
+        fileWriter1.close();
         System.out.println("SAVE");
     }
     
@@ -161,19 +176,29 @@ public class Document implements Serializable{
     public void load() throws FileNotFoundException, IOException, ClassNotFoundException, JSONException{
         i = 0;
         posCur = 0;
-        FileReader fr = new FileReader("D://saveStat.ser"); 
+        FileReader fr = new FileReader("D://saveStatText.ser"); 
         int k; 
         k=fr.read();
+        FileReader fr1 = new FileReader("D://saveStatText.ser"); 
+        int k1; 
+        k1=fr1.read();
 
         p = new ArrayList();
-        System.out.println(k);
+        pictureArr = new ArrayList();
         for (int i = 0; i < k; i++){
-            FileInputStream fileInputStream = new FileInputStream("D://save"+i+".ser");
+            FileInputStream fileInputStream = new FileInputStream("D://saveText"+i+".ser");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
             p.add((Paragraph) objectInputStream.readObject());
             p.get(i).AfterLoad(p.get(i));
-            System.out.println("PRELOAD");
+            //System.out.println("PRELOAD");
+        }
+        for (int i = 0; i < k1; i++){
+            FileInputStream fileInputStream = new FileInputStream("D://savePic"+i+".ser");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+            pictureArr.add((Picture) objectInputStream.readObject());
+            //System.out.println("PRELOAD");
         }
         System.out.println("LOAD");
     }
